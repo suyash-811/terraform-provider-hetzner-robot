@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"strconv"
 )
 
 func resourceBoot() *schema.Resource {
@@ -76,7 +77,7 @@ func resourceBoot() *schema.Resource {
 func resourceBootImportState(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	c := meta.(HetznerRobotClient)
 
-	serverID := d.Id()
+	serverID := d.Get("server_id").(int)
 
 	boot, err := c.getBoot(ctx, serverID)
 	if err != nil {
@@ -100,7 +101,7 @@ func resourceBootImportState(ctx context.Context, d *schema.ResourceData, meta i
 func resourceBootCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(HetznerRobotClient)
 
-	serverID := d.Id()
+	serverID := d.Get("server_id").(int)
 	activeBootProfile := d.Get("active_profile").(string)
 	arch := d.Get("architecture").(string)
 	os := d.Get("operating_system").(string)
@@ -120,7 +121,7 @@ func resourceBootCreate(ctx context.Context, d *schema.ResourceData, meta interf
 	d.Set("ipv4_address", bootProfile.ServerIPv4)
 	d.Set("ipv6_network", bootProfile.ServerIPv6)
 	d.Set("password", bootProfile.Password)
-	d.SetId(serverID)
+	d.SetId(strconv.Itoa(serverID))
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
@@ -131,7 +132,7 @@ func resourceBootCreate(ctx context.Context, d *schema.ResourceData, meta interf
 func resourceBootRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(HetznerRobotClient)
 
-	serverID := d.Id()
+	serverID := d.Get("server_id").(int)
 	boot, err := c.getBoot(ctx, serverID)
 	if err != nil {
 		return diag.FromErr(err)
@@ -154,7 +155,7 @@ func resourceBootRead(ctx context.Context, d *schema.ResourceData, meta interfac
 func resourceBootUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(HetznerRobotClient)
 
-	serverID := d.Id()
+	serverID := d.Get("server_id").(int)
 	activeBootProfile := d.Get("active_profile").(string)
 	arch := d.Get("architecture").(string)
 	os := d.Get("operating_system").(string)

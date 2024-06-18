@@ -25,8 +25,8 @@ type BootProfile struct {
 	ServerIPv6      string
 }
 
-func (c *HetznerRobotClient) getBoot(ctx context.Context, serverID string) (*BootProfile, error) {
-	bytes, err := c.makeAPICall(ctx, "GET", fmt.Sprintf("%s/boot/%s", c.url, serverID), nil, []int{http.StatusOK, http.StatusAccepted})
+func (c *HetznerRobotClient) getBoot(ctx context.Context, serverID int) (*BootProfile, error) {
+	bytes, err := c.makeAPICall(ctx, "GET", fmt.Sprintf("%s/boot/%d", c.url, serverID), nil, []int{http.StatusOK, http.StatusAccepted})
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (c *HetznerRobotClient) getBoot(ctx context.Context, serverID string) (*Boo
 	return &bootProfile, nil
 }
 
-func (c *HetznerRobotClient) setBootProfile(ctx context.Context, serverID string, activeBootProfile string, arch string, os string, lang string, authorizedKeys []string) (*BootProfile, error) {
+func (c *HetznerRobotClient) setBootProfile(ctx context.Context, serverID int, activeBootProfile string, arch string, os string, lang string, authorizedKeys []string) (*BootProfile, error) {
 	data := url.Values{}
 	data.Set("arch", arch)
 	for _, key := range authorizedKeys {
@@ -72,7 +72,7 @@ func (c *HetznerRobotClient) setBootProfile(ctx context.Context, serverID string
 		data.Set("os", os)
 	}
 
-	bytes, err := c.makeAPICall(ctx, "POST", fmt.Sprintf("%s/boot/%s/%s", c.url, serverID, activeBootProfile), data, []int{http.StatusOK, http.StatusAccepted})
+	bytes, err := c.makeAPICall(ctx, "POST", fmt.Sprintf("%s/boot/%d/%s", c.url, serverID, activeBootProfile), data, []int{http.StatusOK, http.StatusAccepted})
 	if err != nil {
 		if strings.Contains(err.Error(), "BOOT_ALREADY_ENABLED") {
 			return c.getBoot(ctx, serverID)

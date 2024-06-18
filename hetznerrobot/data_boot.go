@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"strconv"
 )
 
 func dataBoot() *schema.Resource {
@@ -57,7 +58,7 @@ func dataBoot() *schema.Resource {
 func dataSourceBootRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(HetznerRobotClient)
 
-	serverID := d.Id()
+	serverID := d.Get("server_id").(int)
 	boot, err := c.getBoot(ctx, serverID)
 	if err != nil {
 		return diag.Errorf("Unable to find Boot Profile for server ID %d:\n\t %q", serverID, err)
@@ -70,7 +71,7 @@ func dataSourceBootRead(ctx context.Context, d *schema.ResourceData, meta interf
 	d.Set("language", boot.Language)
 	d.Set("operating_system", boot.OperatingSystem)
 	d.Set("password", boot.Password)
-	d.SetId(serverID)
+	d.SetId(strconv.Itoa(serverID))
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
