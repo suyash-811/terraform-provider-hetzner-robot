@@ -77,7 +77,10 @@ func resourceBoot() *schema.Resource {
 func resourceBootImportState(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	c := meta.(HetznerRobotClient)
 
-	serverID := d.Get("server_id").(int)
+	serverID, err := strconv.Atoi(d.Id())
+	if err != nil {
+		return nil, err
+	}
 
 	boot, err := c.getBoot(ctx, serverID)
 	if err != nil {
