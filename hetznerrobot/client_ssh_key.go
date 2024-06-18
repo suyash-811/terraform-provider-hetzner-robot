@@ -18,7 +18,7 @@ type SshKey struct {
 }
 
 func (c *HetznerRobotClient) getSshKey(ctx context.Context, keyFingerprint string) (*SshKey, error) {
-	bytes, err := c.makeAPICall(ctx, "GET", fmt.Sprintf("%s/key/%s", c.url, keyFingerprint), nil, []int{http.StatusOK, http.StatusAccepted})
+	bytes, err := c.makeAPICall(ctx, "GET", fmt.Sprintf("%s/key/%s", c.url, keyFingerprint), nil, []int{http.StatusOK, http.StatusCreated, http.StatusAccepted})
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (c *HetznerRobotClient) createSshKey(ctx context.Context, name string, data
 	body.Set("name", name)
 	body.Set("data", data)
 
-	bytes, err := c.makeAPICall(ctx, "POST", fmt.Sprintf("%s/key", c.url), body, []int{http.StatusOK, http.StatusAccepted})
+	bytes, err := c.makeAPICall(ctx, "POST", fmt.Sprintf("%s/key", c.url), body, []int{http.StatusOK, http.StatusCreated, http.StatusAccepted})
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (c *HetznerRobotClient) updateSshKey(ctx context.Context, keyFingerprint st
 	body := url.Values{}
 	body.Set("name", newName)
 
-	bytes, err := c.makeAPICall(ctx, "PUT", fmt.Sprintf("%s/key/%s", c.url, keyFingerprint), body, []int{http.StatusOK, http.StatusAccepted})
+	bytes, err := c.makeAPICall(ctx, "PUT", fmt.Sprintf("%s/key/%s", c.url, keyFingerprint), body, []int{http.StatusOK, http.StatusCreated, http.StatusAccepted})
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *HetznerRobotClient) updateSshKey(ctx context.Context, keyFingerprint st
 }
 
 func (c *HetznerRobotClient) deleteSshKey(ctx context.Context, keyFingerprint string) error {
-	_, err := c.makeAPICall(ctx, "DELETE", fmt.Sprintf("%s/key/%s", c.url, keyFingerprint), nil, []int{http.StatusOK, http.StatusAccepted})
+	_, err := c.makeAPICall(ctx, "DELETE", fmt.Sprintf("%s/key/%s", c.url, keyFingerprint), nil, []int{http.StatusOK, http.StatusCreated, http.StatusAccepted})
 	if err != nil {
 		return err
 	}
