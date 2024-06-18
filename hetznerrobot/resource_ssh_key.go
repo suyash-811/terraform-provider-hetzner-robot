@@ -93,6 +93,8 @@ func resourceSshKeyCreate(ctx context.Context, d *schema.ResourceData, meta inte
 		return diag.Errorf("Unable to create SSH key %q:\n\t %q", name, err)
 	}
 
+	d.Set("name", key.Name)
+	d.Set("data", key.Data)
 	d.Set("fingerprint", key.Fingerprint)
 	d.Set("type", key.Type)
 	d.Set("size", key.Size)
@@ -148,7 +150,6 @@ func resourceSshKeyDelete(ctx context.Context, d *schema.ResourceData, meta inte
 	if err != nil {
 		return diag.Errorf("Unable to delete SSH key %q:\n\t %q", keyFingerprint, err)
 	}
-	d.SetId("")
 
 	return diag.Diagnostics{}
 }

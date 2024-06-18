@@ -8,6 +8,10 @@ import (
 	"net/url"
 )
 
+type SshKeyWrapper struct {
+	Key SshKey `json:"key"`
+}
+
 type SshKey struct {
 	Name        string `json:"name"`
 	Fingerprint string `json:"fingerprint"`
@@ -23,12 +27,12 @@ func (c *HetznerRobotClient) getSshKey(ctx context.Context, keyFingerprint strin
 		return nil, err
 	}
 
-	sshKey := SshKey{}
-	if err = json.Unmarshal(bytes, &sshKey); err != nil {
+	sshKeyWrapper := SshKeyWrapper{}
+	if err = json.Unmarshal(bytes, &sshKeyWrapper); err != nil {
 		return nil, err
 	}
 
-	return &sshKey, nil
+	return &sshKeyWrapper.Key, nil
 }
 
 func (c *HetznerRobotClient) createSshKey(ctx context.Context, name string, data string) (*SshKey, error) {
@@ -41,12 +45,12 @@ func (c *HetznerRobotClient) createSshKey(ctx context.Context, name string, data
 		return nil, err
 	}
 
-	sshKey := SshKey{}
-	if err = json.Unmarshal(bytes, &sshKey); err != nil {
+	sshKeyWrapper := SshKeyWrapper{}
+	if err = json.Unmarshal(bytes, &sshKeyWrapper); err != nil {
 		return nil, err
 	}
 
-	return &sshKey, nil
+	return &sshKeyWrapper.Key, nil
 }
 
 func (c *HetznerRobotClient) updateSshKey(ctx context.Context, keyFingerprint string, newName string) (*SshKey, error) {
@@ -58,12 +62,12 @@ func (c *HetznerRobotClient) updateSshKey(ctx context.Context, keyFingerprint st
 		return nil, err
 	}
 
-	sshKey := SshKey{}
-	if err = json.Unmarshal(bytes, &sshKey); err != nil {
+	sshKeyWrapper := SshKeyWrapper{}
+	if err = json.Unmarshal(bytes, &sshKeyWrapper); err != nil {
 		return nil, err
 	}
 
-	return &sshKey, nil
+	return &sshKeyWrapper.Key, nil
 }
 
 func (c *HetznerRobotClient) deleteSshKey(ctx context.Context, keyFingerprint string) error {
