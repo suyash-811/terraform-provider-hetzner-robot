@@ -85,7 +85,7 @@ func (c *HetznerRobotClient) addVSwitchServers(ctx context.Context, id string, s
 	for _, server := range servers {
 		data.Add("server", strconv.Itoa(server.ServerNumber))
 	}
-	_, err := c.makeAPICall(ctx, "POST", fmt.Sprintf("%s/vswitch/%s/server", c.url, id), data, []int{http.StatusOK, http.StatusAccepted})
+	_, err := c.makeAPICall(ctx, "POST", fmt.Sprintf("%s/vswitch/%s/server", c.url, id), data, []int{http.StatusOK, http.StatusCreated, http.StatusAccepted})
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func (c *HetznerRobotClient) removeVSwitchServers(ctx context.Context, id string
 	for _, server := range servers {
 		data.Add("server", strconv.Itoa(server.ServerNumber))
 	}
-	_, err := c.makeAPICall(ctx, "DELETE", fmt.Sprintf("%s/vswitch/%s/server", c.url, id), data, []int{http.StatusOK, http.StatusAccepted})
+	_, err := c.makeAPICall(ctx, "DELETE", fmt.Sprintf("%s/vswitch/%s/server", c.url, id), data, []int{http.StatusOK, http.StatusCreated, http.StatusAccepted})
 	if err != nil {
 		return err
 	}
